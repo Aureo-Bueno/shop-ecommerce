@@ -71,5 +71,5 @@ yarn run dev
 
 ![Tela Inicial](public/assets/screen-notebook.png)
 
-### Detalhes
-![Detalhes](public/assets/screen-phone.png)
+
+![Phone](public/assets/screen-phone.png)
