@@ -69,7 +69,7 @@ yarn run dev
 
 ## Template
 
-![Tela Inicial](public/print1.png)
+![Tela Inicial](public/assets/screen-notebook.png)
 
 ### Detalhes
-![Detalhes](public/print2.png)
+![Detalhes](public/assets/screen-phone.png)
