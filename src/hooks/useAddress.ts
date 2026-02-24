@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { useState } from 'react';
-import axios from 'axios';
+import { useOutletContext } from "react-router-dom";
+import { getApiClient, type APIClient } from "../lib/client";
+import { useState } from "react";
 
 /**
  * Custom React hook to fetch and manage address data based on a Brazilian postal code (CEP).
@@ -51,30 +51,40 @@ import axios from 'axios';
  * - Error handling is included for API failures or invalid CEPs.
  */
 const useAddress = () => {
-  const [address, setAddress] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+	const [address, setAddress] = useState<string>("");
+	const [loading, setLoading] = useState<boolean>(false);
+	const [error, setError] = useState<string | null>(null);
 
-  const fetchAddress = async (enteredCep: string) => {
-    if (enteredCep.length === 8) {
-      setLoading(true);
-      try {
-        const response = await axios.get(`https://viacep.com.br/ws/${enteredCep}/json/`);
-        if (response.data && !response.data.erro) {
-          setAddress(`${response.data.logradouro}, ${response.data.bairro}, ${response.data.localidade} - ${response.data.uf}`);
-        } else {
-          setAddress('CEP não encontrado');
-        }
-      } catch (error) {
-        setAddress('Erro ao consultar o CEP');
-        setError('Erro ao consultar o CEP');
-      } finally {
-        setLoading(false);
-      }
-    }
-  };
+	const context = useOutletContext<{ apiClient: APIClient }>();
+	const apiClient = context?.apiClient ?? getApiClient();
 
-  return { address, loading, fetchAddress, error };
+	const fetchAddress = async (enteredCep: string) => {
+		if (enteredCep.length === 8) {
+			setLoading(true);
+			setError(null);
+			try {
+				const response = await apiClient.get(
+					`https://viacep.com.br/ws/${enteredCep}/json/`,
+				);
+
+				if (response.data && !response.data.erro) {
+					setAddress(
+						`${response.data.logradouro}, ${response.data.bairro}, ${response.data.localidade} - ${response.data.uf}`,
+					);
+				} else {
+					setAddress("CEP não encontrado");
+					setError("CEP não encontrado");
+				}
+			} catch (err) {
+				setAddress("Erro ao consultar o CEP");
+				setError("Erro ao consultar o CEP");
+			} finally {
+				setLoading(false);
+			}
+		}
+	};
+
+	return { address, loading, fetchAddress, error };
 };
 
 export default useAddress;

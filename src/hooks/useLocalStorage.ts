@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from "react";
 
 /**
  * Custom React hook to manage state synchronized with `localStorage`
@@ -33,23 +33,26 @@ import { useState, useEffect } from 'react';
  *   but should expire after a certain period.
  */
 const useLocalStorage = (key: string, initialValue: unknown) => {
-  const [value, setValue] = useState(() => {
-    const saved = localStorage.getItem(key);
-    const expiration = localStorage.getItem(`${key}_expiration`);
-    if (saved && expiration && parseInt(expiration) > Date.now()) {
-      return JSON.parse(saved);
-    }
-    return initialValue;
-  });
+	const [value, setValue] = useState(() => {
+		const saved = localStorage.getItem(key);
+		const expiration = localStorage.getItem(`${key}_expiration`);
+		if (saved && expiration && parseInt(expiration) > Date.now()) {
+			return JSON.parse(saved);
+		}
+		return initialValue;
+	});
 
-  useEffect(() => {
-    if (value !== undefined) {
-      localStorage.setItem(key, JSON.stringify(value));
-      localStorage.setItem(`${key}_expiration`, (Date.now() + 15 * 60 * 1000).toString());
-    }
-  }, [key, value]);
+	useEffect(() => {
+		if (value !== undefined) {
+			localStorage.setItem(key, JSON.stringify(value));
+			localStorage.setItem(
+				`${key}_expiration`,
+				(Date.now() + 15 * 60 * 1000).toString(),
+			);
+		}
+	}, [key, value]);
 
-  return [value, setValue];
+	return [value, setValue];
 };
 
 export default useLocalStorage;
