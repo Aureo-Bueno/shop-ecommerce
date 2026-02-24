@@ -1,3 +1,1 @@
-# Criar/editar o arquivo
-echo 'yarn lint-staged' > .husky/pre-commit
-chmod +x .husky/pre-commit
+yarn lint-staged
